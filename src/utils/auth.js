@@ -22,6 +22,16 @@ module.exports = {
         return !!localStorage.token
     },
 
+    csrf_token: function() {
+        let cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].split('=');
+            if (cookie[0] === 'csrftoken') {
+                return cookie[1];
+            }
+        }
+    },
+
     getToken: function(username, pass, cb) {
 
         let payload = {
@@ -30,7 +40,8 @@ module.exports = {
         };
 
         let headers = {
-            'content-type':'application/json'
+            'content-type':'application/json',
+            'X-CSRFToken': this.csrf_token()
         };
 
         let options = {
